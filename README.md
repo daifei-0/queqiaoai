@@ -47,11 +47,9 @@
 
 ---
 
-## 防仿冒警告 Anti-phishing
+## 官方核验 Official verification
 
-**请勿使用 `api.queqiaoai.cc` 等仿冒站点登录或充值。**
-
-仿冒域名可能盗取账号、密钥或资金。核验官方入口请打开：
+请认准官方域名，勿在不明站点登录或充值。核验官方入口：
 
 - https://queqiaoai.top/official/
 - https://5202828.xyz/official/
@@ -96,7 +94,7 @@
 - API / console: https://5202828.xyz · CDN: https://cdn.5202828.xyz  
 - Docs: https://queqiaoai.top/docs/  
 - Enterprise: corporate payment & invoicing supported  
-- **Do not** use fake sites such as `api.queqiaoai.cc`
+- Please use only the official domains above; do not log in or top up on unknown sites
 
 This GitHub repository is a **promotional / SEO flyer** only. The live product lives on the official domains above.
 
