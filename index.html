@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="鹊桥 AI 官方网站。官方域名 5202828.xyz / cdn.5202828.xyz / queqiaoai.top。提供 AI 模型 API 接入、令牌管理、用量查询与接入文档。请勿使用 api.queqiaoai.cc 等仿冒站点登录或充值；模型与价格以控制台为准。">
+  <title data-queqiao-home="1">鹊桥 AI 官网｜AI API 网关与接入文档</title>
+  <style>
+    :root{
+      color-scheme:light;
+      --bg:#f4f7fb;
+      --bg-elev:#ffffff;
+      --text:#122033;
+      --muted:#5b6b82;
+      --primary:#1677ff;
+      --primary-strong:#0b5ed7;
+      --accent:#0f9f8a;
+      --accent-2:#3b6ef5;
+      --line:rgba(30,55,90,.12);
+      --card:rgba(255,255,255,.88);
+      --shadow:0 24px 50px rgba(40,70,110,.10);
+      --orb-a:rgba(22,119,255,.14);
+      --orb-b:rgba(15,159,138,.12);
+      --orb-c:rgba(255,143,107,.10);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    html,body{margin:0;min-height:100%}
+    body{
+      font-family:"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+      color:var(--text);background:var(--bg);line-height:1.65;
+    }
+    a{color:inherit;text-decoration:none}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+    .fx-bg{position:fixed;inset:0;pointer-events:none;z-index:-1;overflow:hidden}
+    .fx-bg .grid-fade{
+      position:absolute;inset:0;
+      background-image:
+        linear-gradient(var(--line) 1px,transparent 1px),
+        linear-gradient(90deg,var(--line) 1px,transparent 1px);
+      background-size:48px 48px;
+      mask-image:radial-gradient(ellipse at 50% 20%,#000 20%,transparent 70%);
+      opacity:.35;
+    }
+    .orb{position:absolute;border-radius:50%;filter:blur(40px);animation:floaty 12s ease-in-out infinite}
+    .orb-a{width:420px;height:420px;background:var(--orb-a);top:-80px;right:-60px}
+    .orb-b{width:360px;height:360px;background:var(--orb-b);top:20%;left:-120px;animation-delay:-4s}
+    .orb-c{width:280px;height:280px;background:var(--orb-c);bottom:10%;right:18%;animation-delay:-7s}
+    @keyframes floaty{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(20px,-28px,0) scale(1.08)}}
+
+    .shell{min-height:100vh;display:flex;flex-direction:column}
+    .topbar{
+      position:sticky;top:0;z-index:20;
+      display:flex;align-items:center;justify-content:space-between;gap:20px;
+      max-width:1120px;width:100%;margin:0 auto;padding:16px 24px;
+      background:rgba(244,247,251,.82);backdrop-filter:blur(12px);
+      border-bottom:1px solid transparent;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand-mark{
+      width:36px;height:36px;border-radius:10px;display:grid;place-items:center;
+      color:#fff;font-size:16px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--accent-2));
+      box-shadow:0 8px 20px rgba(22,119,255,.25);
+    }
+    .brand strong{display:block;font-size:16px;font-weight:760}
+    .brand small{display:block;color:var(--muted);font-size:12px;font-weight:500}
+    .nav{display:flex;align-items:center;gap:16px;font-size:14px;color:var(--muted);white-space:nowrap;flex-wrap:wrap;justify-content:flex-end}
+    .nav a:hover{color:var(--text)}
+
+    main{flex:1;max-width:1120px;width:100%;margin:0 auto;padding:8px 24px 48px}
+
+    .hero{
+      display:grid;grid-template-columns:1.15fr .85fr;gap:28px;
+      align-items:stretch;padding:28px 0 18px;
+    }
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;margin:0 0 16px;
+      padding:6px 12px;border-radius:999px;
+      border:1px solid rgba(22,119,255,.28);background:rgba(22,119,255,.08);
+      color:var(--primary);font-size:12px;font-weight:700;
+    }
+    .pulse{
+      width:8px;height:8px;border-radius:50%;background:var(--primary);
+      box-shadow:0 0 0 0 rgba(22,119,255,.45);animation:ping 1.8s ease-out infinite;
+    }
+    @keyframes ping{
+      0%{box-shadow:0 0 0 0 rgba(22,119,255,.45)}
+      70%{box-shadow:0 0 0 10px transparent}
+      100%{box-shadow:0 0 0 0 transparent}
+    }
+    h1{
+      margin:0 0 18px;font-size:clamp(32px,4.8vw,52px);
+      line-height:1.16;letter-spacing:-.8px;font-weight:800;text-wrap:balance;
+    }
+    .grad{
+      background:linear-gradient(120deg,#0b5ed7,#1677ff 40%,#0f9f8a);
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+    }
+    .lead{margin:0 0 14px;max-width:40rem;color:var(--muted);font-size:16px}
+    .domain-note{margin:0 0 22px;font-size:13px;color:#7a8799}
+    .domain-note a{color:var(--primary);text-decoration:underline;text-underline-offset:2px}
+    .domain-note b{color:#374151;font-weight:650}
+
+    .cta-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      min-height:46px;padding:0 18px;border-radius:12px;
+      font-size:14px;font-weight:700;transition:.18s ease;border:1px solid transparent;cursor:pointer;
+    }
+    .btn.primary{
+      background:linear-gradient(135deg,var(--primary),var(--accent-2));
+      color:#fff;box-shadow:0 12px 30px rgba(22,119,255,.28);
+    }
+    .btn.primary:hover{transform:translateY(-2px) scale(1.01)}
+    .btn.ghost{border-color:var(--line);background:rgba(18,32,51,.03);color:var(--text)}
+    .btn.ghost:hover{transform:translateY(-2px);border-color:rgba(18,32,51,.22)}
+    .btn.link{color:var(--primary);padding:0 6px;min-height:auto;font-weight:650;background:transparent}
+
+    .trust-row{margin-top:28px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .trust-row div,.card-lift,.grid-3 article,.steps > div{
+      padding:14px;border:1px solid var(--line);border-radius:14px;
+      background:rgba(18,32,51,.025);transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;
+    }
+    .trust-row em{display:block;font-style:normal;font-weight:750;font-size:13px;margin-bottom:4px}
+    .trust-row span{color:var(--muted);font-size:12px}
+    .card-lift:hover,.grid-3 article:hover,.steps > div:hover{
+      transform:translateY(-4px);box-shadow:var(--shadow);
+      border-color:rgba(22,119,255,.35);
+    }
+
+    .hero-panel{
+      position:relative;border-radius:26px;border:1px solid var(--line);
+      overflow:hidden;min-height:400px;padding:22px;
+      display:flex;flex-direction:column;gap:14px;
+      background:
+        linear-gradient(180deg,rgba(255,255,255,.2),rgba(244,247,251,.92)),
+        radial-gradient(circle at 70% 20%,rgba(22,119,255,.18),transparent 45%),
+        radial-gradient(circle at 20% 80%,rgba(15,159,138,.12),transparent 40%),
+        #eef3fb;
+      box-shadow:var(--shadow);
+    }
+    .panel-glow{
+      position:absolute;inset:-20%;
+      background:radial-gradient(circle at 70% 30%,rgba(22,119,255,.22),transparent 45%);
+      animation:glowshift 8s ease-in-out infinite alternate;pointer-events:none;
+    }
+    @keyframes glowshift{
+      from{transform:translate(-2%,-2%) scale(1);opacity:.7}
+      to{transform:translate(4%,3%) scale(1.08);opacity:1}
+    }
+    .panel-card,.panel-list{position:relative;z-index:1}
+    .panel-card{
+      margin-top:auto;padding:16px;border-radius:16px;
+      background:rgba(255,255,255,.78);border:1px solid var(--line);backdrop-filter:blur(10px);
+    }
+    .panel-kicker{margin:0 0 8px;font-size:11px;letter-spacing:1.6px;color:var(--primary);font-weight:750}
+    .panel-card code{display:block;font-size:14px;margin-bottom:8px;color:var(--text)}
+    .panel-note{margin:0;color:var(--muted);font-size:12px}
+    .panel-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+    .panel-list li{
+      display:flex;justify-content:space-between;gap:12px;align-items:baseline;
+      padding:12px 14px;border-radius:12px;border:1px solid var(--line);
+      background:rgba(255,255,255,.7);
+    }
+    .panel-list strong{font-size:13px}
+    .panel-list span{color:var(--muted);font-size:12px;text-align:right}
+
+    .strip{
+      margin:28px 0 8px;padding:18px 20px;border:1px solid var(--line);border-radius:18px;
+      background:var(--card);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;
+    }
+    .strip p{margin:0;color:var(--muted);font-size:14px;font-weight:600}
+    .logos{display:flex;flex-wrap:wrap;gap:10px}
+    .logos span,.chip{
+      padding:8px 14px;border-radius:999px;border:1px solid #e5e7eb;background:#fff;
+      color:#374151;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(15,23,42,.04);
+    }
+
+    .sec{margin:0 0 18px}
+    .kicker{margin:0 0 8px;color:var(--primary);font-size:13px;font-weight:750;letter-spacing:.4px}
+    .sec h2,.rules h2,.cta-band h2{margin:0;font-size:clamp(22px,3vw,30px);line-height:1.3;font-weight:800}
+    .muted{color:var(--muted);font-size:14px;margin:10px 0 0}
+
+    .grid-3{margin:42px 0 18px}
+    .grid-3-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .grid-3 article h3{margin:0 0 8px;font-size:16px}
+    .grid-3 article p{margin:0;color:var(--muted);font-size:14px}
+
+    .rules{
+      margin:42px 0;padding:24px;border-radius:22px;border:1px solid var(--line);
+      background:linear-gradient(180deg,#fff,rgba(244,247,251,.9));
+      display:grid;grid-template-columns:1fr 1.2fr;gap:24px;align-items:start;
+    }
+    .rules ol{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+    .rules li{
+      display:flex;gap:14px;align-items:flex-start;padding:14px 16px;
+      border:1px solid var(--line);border-radius:14px;background:#fff;
+    }
+    .rules li > span{
+      flex:0 0 auto;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;
+      background:rgba(22,119,255,.08);color:var(--primary);font-size:12px;font-weight:800;
+    }
+    .rules strong{display:block;font-size:14px;margin-bottom:2px}
+    .rules p{margin:0;color:var(--muted);font-size:13px}
+
+    .start{margin:42px 0}
+    .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .steps > div > span{
+      display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;
+      background:rgba(22,119,255,.1);color:var(--primary);font-weight:800;font-size:13px;margin-bottom:10px;
+    }
+    .steps h3{margin:0 0 6px;font-size:16px}
+    .steps p{margin:0 0 10px;color:var(--muted);font-size:14px}
+    .steps a{color:var(--primary);font-size:13px;font-weight:650}
+
+    .models{margin:28px 0 8px}
+    .models-title{margin:0 0 12px;color:var(--muted);font-size:14px;font-weight:600;text-align:center}
+    .mtabs{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+    .mtab{
+      display:inline-flex;align-items:center;gap:7px;cursor:pointer;
+      border:1px solid #e5e7eb;background:#fff;border-radius:999px;padding:8px 18px;
+      font-size:14px;font-weight:600;color:#374151;
+      box-shadow:0 4px 16px rgba(15,23,42,.04);
+      transition:border-color .15s,background .15s,color .15s,transform .1s;
+    }
+    .mtab:hover{transform:translateY(-1px);border-color:#cbd5e1}
+    .mtab.active{border-color:var(--primary);color:var(--primary);background:rgba(22,119,255,.06)}
+    .mtab .m-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+    .mtab .mtab-arrow{font-size:11px;color:#9aa3b0;margin-left:2px;transition:transform .2s,color .2s}
+    .mtab.active .mtab-arrow{transform:rotate(180deg);color:var(--primary)}
+    .mpanel{width:min(720px,100%);margin:12px auto 0}
+    .mpanel[hidden]{display:none}
+    .mpanel .mbody{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;padding:14px;border:1px solid #eef1f5;border-radius:14px;background:#fff;box-shadow:0 4px 16px rgba(15,23,42,.04)}
+    .mpanel .mbody[hidden]{display:none}
+    .dot-anthropic{background:#d97757}.dot-openai{background:#10a37f}.dot-gemini{background:#4285f4}.dot-grok{background:#1f2937}
+
+    .cta-band{
+      margin:42px 0 18px;padding:28px;border-radius:22px;
+      display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px;
+      background:linear-gradient(135deg,#0b5ed7,#1677ff 45%,#0f9f8a);
+      color:#fff;box-shadow:0 20px 40px rgba(22,119,255,.25);
+    }
+    .cta-band p{margin:8px 0 0;opacity:.9;font-size:14px}
+    .cta-band .btn.primary{background:#fff;color:#0b5ed7;box-shadow:none}
+    .cta-band .btn.ghost{border-color:rgba(255,255,255,.35);color:#fff;background:rgba(255,255,255,.08)}
+
+    #brand-seo-official{
+      font-family:inherit;line-height:1.8;color:#475569;
+      background:rgba(255,255,255,.7);border:1px solid var(--line);
+      border-radius:16px;padding:18px 20px;margin:28px 0 12px;box-sizing:border-box;
+    }
+    #brand-seo-official h2{font-size:16px;margin:0 0 6px;color:var(--text);font-weight:750}
+    #brand-seo-official p{margin:6px 0;font-size:13px}
+    #brand-seo-official a{color:var(--primary);text-decoration:underline;text-underline-offset:2px}
+
+    details.agreement{
+      width:100%;margin:18px 0 8px;border:1px solid #e5e7eb;border-radius:14px;
+      background:#fff;box-shadow:0 8px 24px rgba(15,23,42,.04);overflow:hidden;
+    }
+    details.agreement>summary{
+      list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:14px 18px;background:#f4f5f7;color:#1f2430;font-weight:800;font-size:15px;
+    }
+    details.agreement>summary::-webkit-details-marker{display:none}
+    details.agreement .agr-arrow{font-size:13px;font-weight:700;white-space:nowrap;color:#6b7280}
+    details.agreement:not([open]) .agr-arrow::after{content:"展开阅读 \25BE"}
+    details.agreement[open] .agr-arrow::after{content:"收起 \25B4"}
+    .agreement .disclaimer{
+      max-height:56vh;overflow-y:auto;margin:0;padding:14px 18px 18px;
+      font-size:12.5px;line-height:1.62;color:var(--muted);
+    }
+    .agreement .disclaimer .dz-banner{
+      margin:0 0 12px;padding:10px 14px;border-radius:8px;border:1px solid #ffccc7;
+      background:#fff1f0;color:#cf1322;font-weight:800;font-size:13px;text-align:center;
+    }
+    .agreement .dz-meta{font-size:11px;color:#9aa3b0;margin:0 0 8px}
+    .agreement h3{font-size:12.5px;color:#374151;margin:12px 0 4px;font-weight:700}
+    .agreement p{margin:5px 0}
+    .agreement .dz-sign{margin:14px 0 2px;text-align:right;color:#374151;font-weight:600}
+
+    .footer{
+      margin-top:auto;padding:20px 24px 28px;display:flex;flex-direction:column;
+      align-items:center;gap:12px;text-align:center;color:var(--muted);font-size:13px;
+      border-top:1px solid var(--line);background:rgba(255,255,255,.5);
+    }
+    .foot-links{display:flex;flex-wrap:wrap;justify-content:center;gap:14px}
+    .foot-links a:hover{color:var(--primary)}
+    .footer a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr}
+      .hero-panel{min-height:auto}
+      .trust-row,.grid-3-cards,.steps{grid-template-columns:1fr}
+      .rules{grid-template-columns:1fr}
+    }
+    @media (max-width:640px){
+      .topbar{padding:12px 16px}
+      .nav{gap:10px;font-size:13px}
+      main{padding:4px 16px 36px}
+      h1{font-size:30px}
+      .cta-band{padding:22px}
+    }
+  .qq-slogan-big{display:block;font-size:clamp(24px,3.6vw,38px)!important;line-height:1.4;font-weight:780;color:#0f172a;margin:12px 0 16px;}
+
+.qq-cs-bar{
+  margin:16px auto 10px;max-width:1100px;padding:28px 28px;
+  border-radius:20px;color:#fff;
+  background:linear-gradient(120deg,#7c3aed 0%,#db2777 55%,#f97316 100%);
+  box-shadow:0 18px 40px rgba(124,58,237,.22);
+  display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;
+}
+.qq-cs-bar .qq-cs-copy{flex:1;min-width:240px}
+.qq-cs-bar h2{margin:0;font-size:clamp(22px,3vw,30px);line-height:1.3;font-weight:800}
+.qq-cs-bar p{margin:8px 0 0;opacity:.95;font-size:14px}
+.qq-cs-bar .qq-cs-actions{display:flex;gap:10px;flex-wrap:wrap}
+.qq-cs-bar .btn.primary{background:#fff;color:#9d174d;box-shadow:none;border:none}
+.qq-cs-bar .btn.ghost{border:1px solid rgba(255,255,255,.4);color:#fff;background:rgba(255,255,255,.12)}
+.qq-copy-group{
+  display:inline-flex;align-items:center;margin-left:8px;padding:6px 14px;
+  border:1px solid rgba(255,255,255,.55);border-radius:999px;
+  background:rgba(255,255,255,.18);color:#fff;font-weight:800;font-size:15px;cursor:pointer;
+}
+.qq-copy-group:hover{background:rgba(255,255,255,.28)}
+.qq-copy-group.copied{background:#ecfdf5;color:#047857;border-color:#86efac}
+@media (max-width:640px){.qq-cs-bar{padding:22px}}
+
+.qq-cs-bar{justify-content:center;text-align:center;}
+.qq-cs-bar .qq-cs-line{margin:0;font-size:clamp(18px,2.4vw,26px);font-weight:750;line-height:1.5;color:#fff;}
+.qq-cs-bar .qq-cs-hint{margin-left:6px;font-size:0.72em;font-weight:600;opacity:.92;}
+.qq-cs-bar .qq-cs-actions{display:none!important;}
+
+.endpoint-box .endpoint-label{font-size:12px;font-weight:700;letter-spacing:.08em;opacity:.85;margin-bottom:8px}
+.endpoint-box .endpoint-line{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:6px 0;font-size:14px}
+.endpoint-box .endpoint-line .k{opacity:.9;min-width:4.5em}
+.endpoint-box .endpoint-line code{font-size:13px;font-weight:700}
+.endpoint-box .endpoint-note{margin:10px 0 0;font-size:12px;opacity:.9;line-height:1.5}
+
+.panel-card .endpoint-line{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:8px 0;font-size:13px;color:inherit}
+.panel-card .endpoint-line .k{opacity:.9;min-width:4.5em;font-weight:650}
+.panel-card .endpoint-line code{font-size:13px;font-weight:700;word-break:break-all}
+</style>
+<link id="brand-seo-canonical" rel="canonical" href="https://5202828.xyz/">
+<meta id="brand-seo-robots" name="robots" content="index,follow,max-image-preview:large">
+<meta id="brand-seo-og-title" property="og:title" content="鹊桥 AI 官网｜AI API 网关与接入文档">
+<meta id="brand-seo-og-description" property="og:description" content="鹊桥 AI 官方网站。官方域名 5202828.xyz / cdn.5202828.xyz / queqiaoai.top。提供 AI 模型 API 接入、令牌管理、用量查询与接入文档。请勿使用 api.queqiaoai.cc 等仿冒站点登录或充值；模型与价格以控制台为准。">
+<meta id="brand-seo-og-url" property="og:url" content="https://5202828.xyz/">
+<meta id="brand-seo-og-type" property="og:type" content="website">
+<meta id="brand-seo-og-name" property="og:site_name" content="鹊桥 AI">
+<meta id="brand-seo-og-locale" property="og:locale" content="zh_CN">
+<meta id="brand-seo-og-image" property="og:image" content="https://5202828.xyz/logo.png">
+<meta id="brand-seo-og-image-alt" property="og:image:alt" content="鹊桥 AI">
+<script id="brand-seo-jsonld" type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://5202828.xyz/#website", "url": "https://5202828.xyz/", "name": "鹊桥 AI", "alternateName": ["鹊桥AI", "鹊桥"], "inLanguage": "zh-CN", "publisher": {"@id": "https://5202828.xyz/#organization"}}, {"@type": "Organization", "@id": "https://5202828.xyz/#organization", "name": "鹊桥 AI", "url": "https://5202828.xyz/"}]}</script>
+<meta name="msvalidate.01" content="608A85645FE6042F61C5954186A53E76" />
+</head>
+<body>
+  <!-- GitHub Pages promotional mirror of 鹊桥 AI official homepage. Canonical site: https://queqiaoai.top / https://5202828.xyz -->
+  <div class="fx-bg" aria-hidden="true">
+    <span class="orb orb-a"></span>
+    <span class="orb orb-b"></span>
+    <span class="orb orb-c"></span>
+    <span class="grid-fade"></span>
+  </div>
+
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="https://queqiaoai.top/">
+        <span class="brand-mark">桥</span>
+        <span><strong>鹊桥</strong><small>AI API 网关</small></span>
+      </a>
+      <nav class="nav">
+        <a href="https://queqiaoai.top/">首页</a>
+        <a href="https://queqiaoai.top/official/">官方入口</a>
+        <a href="https://queqiaoai.top/console">控制台</a>
+        <a href="https://queqiaoai.top/pricing">模型广场</a>
+        <a href="https://queqiaoai.top/docs/">文档</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy panel">
+          <p class="badge"><span class="pulse"></span>更好价格 · 更稳调用</p>
+          <h1>更好的价格，更好的<span class="grad">稳定</span>。</h1>
+          <p class="lead sub"><span class="qq-slogan-big">让中国人以<span class="grad">更低的成本</span>、<span class="grad">更高效</span>地运用<span class="grad">更先进的生产力</span>。</span>鹊桥是面向生产的 AI API 网关：不掺水、不降智，计价透明、调用可预期。</p>
+          <p class="domain-note">官方域名 <b>5202828.xyz</b> / <b>cdn.5202828.xyz</b> / <b>queqiaoai.top</b> · <a href="https://queqiaoai.top/official/">核验官方入口</a></p>
+          <div class="cta-row">
+            <a class="btn primary" href="https://queqiaoai.top/console">进入控制台</a>
+            <a class="btn ghost" href="https://queqiaoai.top/login">登录</a>
+            <a class="btn link" href="https://queqiaoai.top/docs/">接入文档 →</a>
+          </div>
+          <div class="trust-row">
+            <div><em>更好价格</em><span>成本更低，把预算用在产品上</span></div>
+            <div><em>更好稳定</em><span>生产可用，少踩「能通不稳」</span></div>
+            <div><em>不掺水不降智</em><span>渠道可追溯，模型表现不缩水</span></div>
+          </div>
+        </div>
+        <aside class="hero-panel" aria-label="能力速览">
+          <div class="panel-glow" aria-hidden="true"></div>
+          <ul class="panel-list">
+            <li><strong>不掺水</strong><span>渠道与质量可追溯</span></li>
+            <li><strong>不降智</strong><span>独家独创的「防降智」秘方</span></li>
+            <li><strong>明码标价</strong><span>模型与分组价格可查</span></li>
+            <li><strong>企业合作</strong><span>支持对公、支持开票</span></li>
+          </ul>
+          <div class="panel-card">
+            <p class="panel-kicker">接入地址</p>
+            <p class="endpoint-line"><span class="k">加速线路</span><code>https://cdn.5202828.xyz</code></p>
+            <p class="endpoint-line"><span class="k">海外直连</span><code>https://5202828.xyz</code></p>
+            <p class="panel-note">统一入口 · OpenAI 兼容 · 改一行 Base URL 即可接入</p>
+          </div>
+        </aside>
+      </section>
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <section class="cta-band">
+        <div>
+          <h2>把复杂的模型接入，交给鹊桥。</h2>
+          <p>更好的价格，更好的稳定 — 让团队把精力放在产品本身。</p>
+        </div>
+        <div class="cta-row">
+          <a class="btn primary" href="https://queqiaoai.top/console">进入控制台</a>
+          <a target="_blank" rel="noopener noreferrer" class="btn ghost" href="https://queqiaoai.top/tutorial">阅读教程</a>
+        </div>
+      </section>
+
+      
+      <section class="qq-cs-bar" aria-label="客服进群">
+        <p class="qq-cs-line">客服免费远程，解决各种问题。进群：
+          <button type="button" class="qq-copy-group" data-copy="538642822" title="点击即可复制">538642822</button>
+          <span class="qq-cs-hint">（点击即可复制）</span>
+        </p>
+      </section>
+      <section id="brand-seo-official" aria-label="官方域名说明">
+        <h2>鹊桥 AI · 官方入口</h2>
+        <p>官方域名：5202828.xyz / cdn.5202828.xyz / queqiaoai.top。提供 AI 模型 API 接入、令牌管理、用量查询与接入文档。</p>
+        <p><a href="https://queqiaoai.top/official/">核验官方域名</a> · <a href="https://queqiaoai.top/docs/">接入教程</a> · 模型与价格以控制台为准。</p>
+      </section>
+
+      <details class="agreement" id="qq-agreement">
+        <summary><span class="agr-title">鹊桥 用户服务协议与免责声明</span><span class="agr-arrow"></span></summary>
+        <div class="disclaimer">
+        <div class="dz-banner">使用本平台，即默认同意该规则！</div>
+        <div class="dz-meta">版本号：2026.05 ｜ 最后更新：2026年5月</div>
+
+        <p><strong>【特别提示】</strong>鹊桥（以下简称"本平台"）是一个纯粹的跨境算力中转与技术适配工具。本平台不生产、不存储、不审核任何 AI 内容，仅提供通往第三方模型的网络链路。在您点击"确认""注册"或实际开始使用本服务前，请务必审慎阅读本协议。一旦使用，即代表您承认：您是基于自身科研或学习需求，自愿寻找并使用本工具，并自行承担一切合规风险。</p>
+
+        <h3>一、地理围栏与跨境合规声明</h3>
+        <p><strong>服务禁区：</strong>本平台明确声明不对中国大陆地区（不含港澳台）提供商业化服务。本平台所有服务器部署及底层接口调用均发生于海外或非限制地区。</p>
+        <p><strong>用户准入确认：</strong>用户在此不可撤销地确认，其访问本平台时的物理位置不在中国大陆境内。用户通过任何技术手段（如代理服务器、VPN、中转机等）绕过地理限制访问本服务的行为，视为用户的个人自主选择与主观行为，由此产生的合规责任及法律后果由用户自行承担。</p>
+        <p><strong>数据跨境流向：</strong>用户充分知悉并授权：用户输入的指令（Prompt）将跨境传输至境外第三方模型服务器进行计算处理。用户承诺不输入任何涉及国家秘密、军事机密或未经脱敏的个人隐私数据。</p>
+
+        <h3>二、技术性质与中转定位</h3>
+        <p><strong>中枢属性：</strong>本平台仅作为第三方接口（如 OpenAI、Google、Anthropic 等）的技术中枢与分发中继。生成内容不代表本平台及其运营方的观点或立场。</p>
+        <p><strong>算法"幻觉"免责：</strong>AI 生成的内容具有高度随机性，可能存在事实性错误、逻辑偏见或过时的信息。本平台不对生成内容的真实性、时效性、完整性提供任何形式的保证。</p>
+        <p><strong>非专业建议：</strong>AI 提供的任何建议均不构成专业法律、医疗或投资意见。严禁将 AI 生成内容直接用于高风险决策，用户依据 AI 内容做出的任何行为，后果由用户自负。</p>
+
+        <h3>三、内容安全审计与红线拦截</h3>
+        <p><strong>双向审计机制：</strong>本平台接入了自动化的敏感词审查系统。严禁输入涉及政治敏感、淫秽色情、暴力恐怖、虚假新闻、封建迷信或侵害他人名誉的内容。</p>
+        <p><strong>违规处罚：</strong>恶意触发安全拦截、尝试"提示词越狱"或进行对抗性测试的用户，本平台有权在不通知的情况下立即采取永久封号、销毁相关数据且不予退费等措施。</p>
+
+        <h3>四、深度伪造（Deepfake）禁令</h3>
+        <p><strong>禁止身份伪造：</strong>严禁利用本平台提供的生成合成技术伪造他人的人脸、人声或身份。严禁制作、发布、传播虚假音视频或误导性信息。</p>
+        <p><strong>标识保留：</strong>用户不得通过任何技术手段剥离、篡改或遮挡输出内容中的 AI 合成标识（包含显式水印及隐式数字签名）。</p>
+
+        <h3>五、团队/机构账户专项责任</h3>
+        <p><strong>管理员责任：</strong>若用户为机构或团队账户，主管理员需对旗下所有子用户的提问及生成内容承担连带合规责任。</p>
+        <p><strong>内部监管义务：</strong>机构用户应自行对其成员进行合规培训与内容审计。任一子账户的违规行为均可能导致整个机构账户被采取限制或关停措施。</p>
+
+        <h3>六、知识产权避风港原则</h3>
+        <p><strong>侵权处理：</strong>本平台执行"通知-删除"原则。若权利人认为本平台生成内容侵犯其合法权益，请通过官方渠道提交有效证明。平台在核实后将采取删除、阻断或限制访问等措施。</p>
+
+        <h3>七、财务结算与虚拟商品属性</h3>
+        <p><strong>非商业销售定性：</strong>用户支付的款项将被定性为"对跨境算力中转技术研发的自愿赞助"或"服务器带宽分摊费用"，而非购买特定 AI 内容产品。</p>
+        <p><strong>概不退费：</strong>充值获得的算力点（Tokens）属于即时消费的数字化虚拟资源。一经消费、过期或因用户违规被封禁，概不退还。</p>
+        <p><strong>定价浮动权：</strong>鉴于底层 API 价格波动，平台保留根据实际运营成本动态调整算力点计费比例的权利，无需另行通知。</p>
+
+        <h3>八、供应链风险与不可抗力</h3>
+        <p><strong>服务稳定性：</strong>鉴于本平台对境外第三方接口的依赖性，若因底层服务商政策变更、接口封禁、跨境网络波动或国家政策强制干预导致服务异常，平台仅按比例结算剩余额度，不承担额外违约赔偿。</p>
+
+        <h3>九、责任限额与证据效力</h3>
+        <p><strong>赔付上限：</strong>在任何情况下，本平台承担的赔偿责任总额，最高不得超过该用户在争议发生前 30 天内实际支付给本平台的净费用。</p>
+        <p><strong>日志为准：</strong>争议解决时，以本平台服务器后端存储的原始日志、时间戳作为唯一判定的事实依据，不认可任何经由第三方修改、裁剪后的截图或录屏证据。</p>
+
+        <h3>十、禁止恶意勒索与差旅承担</h3>
+        <p><strong>反向维权禁止：</strong>用户不得利用平台未完成特定行政备案或调用境外接口等现状，对平台进行敲诈、勒索或恶意举报。</p>
+        <p><strong>成本承担约定：</strong>若用户发起恶意起诉且最终败诉，用户应承担平台因此产生的差旅费、律师费及名誉损失费。</p>
+
+        <h3>十一、账户安全性与防盗刷</h3>
+        <p><strong>严禁二次租售：</strong>账户仅限注册主体使用，严禁转让、租借或通过 API 进行二次分发。由此产生的资产损耗或信息泄露由用户自行承担。</p>
+
+        <h3>十二、严禁自动化与商业滥用</h3>
+        <p><strong>非人机交互限制：</strong>严禁使用爬虫、自动化脚本或并发工具对接口进行非人为调用。系统检测到流量异常有权立即实施熔断，由此产生的损失不予补偿。</p>
+
+        <h3>十三、算法透明度与推荐中立性</h3>
+        <p><strong>非干扰原则：</strong>鹊桥不参与底层模型的算法逻辑干预。生成结果的排列顺序及回复优先级均由底层模型逻辑决定。</p>
+        <p><strong>中立中转：</strong>本平台不提供个性化定向推送，所有回复均基于用户即时输入的 Prompt 触发。</p>
+
+        <h3>十四、第三方链接与账户资产</h3>
+        <p><strong>外部风险提示：</strong>生成内容中可能包含指向第三方的链接。本平台不对第三方网站的安全性和合法性负责，点击风险自担。</p>
+        <p><strong>资产不可继承：</strong>账户内的算力点仅视为"服务访问凭证"，不具备货币属性及遗产属性。用户身故后，账户余额无法通过继承方式转让。</p>
+
+        <h3>十五、平台身份的"纯中转"定性（核心撇清）</h3>
+        <p><strong>非内容提供者：</strong>用户明确知悉，本平台既非生成式人工智能服务的"提供者"，亦非内容的"生产者"，仅提供类似"路由器"或"翻译网关"的技术传输服务。</p>
+        <p><strong>技术无罪声明：</strong>用户对内容的所有使用行为，均视为用户直接与底层模型方发生的交互，与本平台无涉。</p>
+
+        <h3>十六、行政合规隔离与"主动违规"判定</h3>
+        <p><strong>主动违规判定：</strong>若用户所在地法律禁止访问本服务，用户强行通过代理、VPN 等方式访问产生的后果，属于"用户蓄意绕过平台技术限制"，相关行政或刑事责任由用户自担。</p>
+
+        <h3>十七、最终免责：平台"自毁"豁免</h3>
+        <p><strong>服务永久终止权：</strong>鉴于政策及技术环境的不可控性，本平台有权在感知到法律风险时采取"一键自毁"模式（包括但不限于清空数据库、关闭域名、注销实体），且不承担违约责任。</p>
+        <p><strong>数据清理义务：</strong>用户理解并同意，平台为保护隐私将定期粉碎历史对话记录。用户有义务自行备份重要数据。</p>
+
+        <h3>十八、最终裁决与司法管辖</h3>
+        <p><strong>管辖权约定：</strong>本协议受平台运营方所在地法律管辖。若协议中任一条款被判定无效，不影响其他条款的法律约束力。</p>
+
+        <p class="dz-sign">鹊桥 运营团队 谨启</p>
+        </div>
+      </details>
+    </main>
+
+    <footer class="footer">
+      <div class="foot-links">
+        <a href="https://queqiaoai.top/console">控制台</a>
+        <a href="https://queqiaoai.top/pricing">模型广场</a>
+        <a href="https://queqiaoai.top/docs/">文档</a>
+        <a href="https://queqiaoai.top/tutorial" target="_blank" rel="noopener noreferrer">教程</a>
+        <a href="https://queqiaoai.top/official/">官方入口</a>
+        <a href="#qq-agreement">服务协议</a>
+      </div>
+      <div class="foot-copy">© 2026 鹊桥. <a href="https://queqiaoai.top/agreement">服务协议与隐私说明</a> · 管理员联系 2557237738 · QQ 群 538642822</div>
+    </footer>
+  </div>
+
+  <script>
+  (function () {
+    var tabs = [].slice.call(document.querySelectorAll('.mtab'));
+    var panel = document.getElementById('mpanel');
+    var bodies = [].slice.call(document.querySelectorAll('.mpanel .mbody'));
+    if (!tabs.length || !panel) return;
+    function show(key) {
+      var any = false;
+      tabs.forEach(function (t) { t.classList.toggle('active', t.getAttribute('data-mkey') === key); });
+      bodies.forEach(function (b) { var on = b.getAttribute('data-mkey') === key; b.hidden = !on; if (on) any = true; });
+      panel.hidden = !any;
+    }
+    tabs.forEach(function (t) {
+      t.addEventListener('click', function () {
+        show(t.classList.contains('active') ? null : t.getAttribute('data-mkey'));
+      });
+    });
+  })();
+  </script>
+<script data-qq-holiday-topup-home="1">
+(function () {
+  'use strict';
+
+  var id = 'qq-holiday-topup-announcement';
+  var styleId = id + '-style';
+  var start = Date.parse('2026-09-28T18:41:47+08:00');
+  var end = Date.parse('2026-10-03T00:00:00+08:00');
+
+  function mount() {
+    var oldBox = document.getElementById(id);
+    var oldStyle = document.getElementById(styleId);
+    if (oldBox) oldBox.remove();
+    if (oldStyle) oldStyle.remove();
+    if (Date.now() >= end) return;
+    if (Date.now() < start) {
+      setTimeout(mount, start - Date.now());
+      return;
+    }
+
+    var panel = document.querySelector('main .hero-copy.panel, main .hero .panel, section.panel');
+    var anchor = panel && (panel.querySelector(':scope > .sub') || panel.querySelector('.lead') || panel.querySelector('.domain-note'));
+    if (!anchor) return;
+
+    var style = document.createElement('style');
+    style.id = styleId;
+    style.textContent = [
+      '#' + id + '{box-sizing:border-box;width:min(640px,100%);min-width:0;padding:16px;border:1px solid #d7e7ff;border-radius:16px;background:linear-gradient(135deg,#f0f7ff,#fff 65%);box-shadow:0 5px 20px rgba(22,119,255,.05);color:#111827;text-align:left;font-size:13px;line-height:1.5;margin:0 0 18px}',
+      '#' + id + ' *{box-sizing:border-box}',
+      '#' + id + ' .qq-promo-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 12px;margin-bottom:12px}',
+      '#' + id + ' .qq-promo-title{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:0;font-size:15px;font-weight:750;line-height:1.4;color:#123968}',
+      '#' + id + ' .qq-promo-badge{padding:2px 7px;border-radius:6px;background:#e4efff;color:#0b5ed7;font-size:11px;font-weight:600;white-space:nowrap}',
+      '#' + id + ' .qq-promo-clock{display:flex;align-items:center;gap:5px;color:#5b6472;font-size:12px;white-space:nowrap}',
+      '#' + id + ' .qq-promo-clock b{color:#0b5ed7;font-variant-numeric:tabular-nums;font-weight:650}',
+      '#' + id + ' .qq-promo-tiers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}',
+      '#' + id + ' .qq-promo-tier{min-width:0;padding:10px 8px;border:1px solid #e2ebf7;border-radius:10px;background:rgba(255,255,255,.9);text-align:center}',
+      '#' + id + ' .qq-promo-tier span{display:block;margin-bottom:3px;color:#5b6472;font-size:12px}',
+      '#' + id + ' .qq-promo-tier strong{display:block;color:#123968;font-size:15px;line-height:1.45;font-weight:750}',
+      '#' + id + ' .qq-promo-tier small{display:block;color:#1677ff;font-size:11px;font-weight:600}',
+      '#' + id + ' .qq-promo-foot{display:flex;align-items:center;gap:14px;margin-top:12px}',
+      '#' + id + ' .qq-promo-note{flex:1;min-width:0;margin:0;color:#5b6472;font-size:11px;line-height:1.7;overflow-wrap:anywhere}',
+      '#' + id + ' .qq-promo-note b{color:#374151;font-weight:600}',
+      '#' + id + ' .qq-promo-link{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:8px 15px;border-radius:9px;background:var(--primary,#1677ff);color:#fff;font-size:13px;font-weight:650;text-decoration:none;white-space:nowrap;transition:background .15s}',
+      '#' + id + ' .qq-promo-link:hover{background:var(--primary-strong,#0b5ed7)}',
+      '#' + id + ' .qq-promo-link:focus-visible{outline:3px solid #9ac7ff;outline-offset:3px}',
+      '@media(max-width:520px){#' + id + '{padding:14px;border-radius:14px}#' + id + ' .qq-promo-tiers{grid-template-columns:repeat(2,minmax(0,1fr))}#' + id + ' .qq-promo-tier{padding:8px}#' + id + ' .qq-promo-foot{align-items:flex-start;gap:10px}#' + id + ' .qq-promo-link{padding:8px 12px}}',
+      '@media(max-width:360px){#' + id + ' .qq-promo-foot{flex-direction:column}#' + id + ' .qq-promo-link{width:100%}}'
+    ].join('\n');
+
+    var box = document.createElement('aside');
+    box.id = id;
+    box.setAttribute('aria-labelledby', id + '-title');
+    box.innerHTML = [
+      '<div class="qq-promo-head">',
+      '<h2 class="qq-promo-title" id="' + id + '-title">国庆充值加赠 <span class="qq-promo-badge">最高 10%</span></h2>',
+      '<div class="qq-promo-clock">距结束 <b role="timer" aria-live="off"></b></div>',
+      '</div>',
+      '<div class="qq-promo-tiers" aria-label="充值赠送档位">',
+      '<div class="qq-promo-tier"><span>充值 ¥30</span><strong>送 ¥0.90</strong><small>加赠 3%</small></div>',
+      '<div class="qq-promo-tier"><span>充值 ¥50</span><strong>送 ¥2.50</strong><small>加赠 5%</small></div>',
+      '<div class="qq-promo-tier"><span>充值 ¥100</span><strong>送 ¥8.00</strong><small>加赠 8%</small></div>',
+      '<div class="qq-promo-tier"><span>充值 ¥200 及以上</span><strong>加赠 10%</strong><small>¥200 预计赠 ¥20</small></div>',
+      '</div>',
+      '<div class="qq-promo-foot">',
+      '<p class="qq-promo-note">以上赠送为预估，实际以到账为准。<b>每账号活动累计赠送上限 ¥1,000，实付优惠可叠加。</b><br>10月3日 00:00 截止（北京时间）。</p>',
+      '<a class="qq-promo-link" href="https://queqiaoai.top/wallet">去充值 <span aria-hidden="true">&nbsp;→</span></a>',
+      '</div>'
+    ].join('');
+
+    document.head.appendChild(style);
+    anchor.insertAdjacentElement('afterend', box);
+    var countdown = box.querySelector('[role="timer"]');
+    var timer;
+
+    function tick() {
+      var remaining = end - Date.now();
+      if (remaining <= 0) {
+        box.remove();
+        style.remove();
+        clearInterval(timer);
+        return;
+      }
+      var seconds = Math.ceil(remaining / 1000);
+      var days = Math.floor(seconds / 86400);
+      var hours = Math.floor(seconds % 86400 / 3600);
+      var minutes = Math.floor(seconds % 3600 / 60);
+      var rest = seconds % 60;
+      countdown.textContent = days + '天 ' + String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0') + ':' + String(rest).padStart(2, '0');
+    }
+
+    tick();
+    timer = setInterval(tick, 1000);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', mount, { once: true });
+  } else {
+    mount();
+  }
+})();
+
+</script>
+
+<script>
+(function(){
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest && e.target.closest('.qq-copy-group');
+    if(!btn) return;
+    var v = btn.getAttribute('data-copy') || btn.textContent.trim();
+    function done(){
+      var old = btn.textContent;
+      btn.classList.add('copied');
+      btn.textContent = '已复制';
+      setTimeout(function(){ btn.classList.remove('copied'); btn.textContent = old; }, 1500);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(v).then(done).catch(function(){
+        var ta=document.createElement('textarea'); ta.value=v; document.body.appendChild(ta); ta.select();
+        try{document.execCommand('copy');}catch(err){}
+        document.body.removeChild(ta); done();
+      });
+    } else {
+      var ta=document.createElement('textarea'); ta.value=v; document.body.appendChild(ta); ta.select();
+      try{document.execCommand('copy');}catch(err){}
+      document.body.removeChild(ta); done();
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
