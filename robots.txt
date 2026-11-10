@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://daifei-0.github.io/queqiaoai/sitemap.xml
