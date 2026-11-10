@@ -76,12 +76,13 @@
 ## 最近更新
 
 - **2026-11-10**：撤下已于 10 月 3 日截止的国庆充值加赠条；宣传页页脚与结构化数据改为本次维护日期；补充 `robots.txt` 与 `sitemap.xml`，方便搜索引擎重新抓取 GitHub Pages 宣传页。
+- **2026-11-10**：宣传页补上常见模型系列入口（OpenAI、Anthropic、Gemini、Grok）。价格与可用性仍以控制台为准，入口统一指向 [模型广场](https://queqiaoai.top/pricing)。
 
 ## 仓库说明
 
 | 文件 | 说明 |
 |------|------|
-| `index.html` | 官网静态宣传页镜像（已清洗敏感信息，链接指向官网） |
+| `index.html` | 官网静态宣传页镜像（已清洗敏感信息，链接指向官网；含模型系列入口） |
 | `logo.png` | 公开品牌 Logo |
 | `robots.txt` | 允许抓取，并指向站点地图 |
 | `sitemap.xml` | GitHub Pages 宣传页站点地图 |
